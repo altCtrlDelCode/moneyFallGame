@@ -16,7 +16,6 @@ function createFallingObject() {
     const x = Math.random() * (canvas.width - objectSize);
     const symbol = getRandomSymbol();
     fallingObjects.push({ x, y: 0, symbol });
-    console.log("Created falling object:", { x, y: 0, symbol });
 }
 
 function update() {
@@ -49,7 +48,6 @@ function checkCollision(x, y) {
             if (obj.symbol === "$") {
                 score++;
                 fallingObjects.splice(i, 1);
-                console.log("Collected $ symbol! Score:", score);
                 break;
             }
         }
@@ -71,18 +69,15 @@ function getCanvasCoordinates(event) {
 
 canvas.addEventListener("click", (e) => {
     const { x, y } = getCanvasCoordinates(e);
-    console.log("Mouse click at:", { x, y });
     checkCollision(x, y);
 });
 
 canvas.addEventListener("touchstart", (e) => {
     const { x, y } = getCanvasCoordinates(e);
-    console.log("Touch at:", { x, y });
     checkCollision(x, y);
 });
 
 function startGame() {
-    console.log("Starting game...");
     startButton.style.display = "none";
     canvas.style.display = "block";
     gameInterval = setInterval(() => {
