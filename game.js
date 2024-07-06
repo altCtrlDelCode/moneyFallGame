@@ -56,18 +56,27 @@ function checkCollision(x, y) {
     }
 }
 
-canvas.addEventListener("click", (e) => {
+function getCanvasCoordinates(event) {
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    console.log("Click at:", { x, y });
+    let x, y;
+    if (event.touches) {
+        x = event.touches[0].clientX - rect.left;
+        y = event.touches[0].clientY - rect.top;
+    } else {
+        x = event.clientX - rect.left;
+        y = event.clientY - rect.top;
+    }
+    return { x, y };
+}
+
+canvas.addEventListener("click", (e) => {
+    const { x, y } = getCanvasCoordinates(e);
+    console.log("Mouse click at:", { x, y });
     checkCollision(x, y);
 });
 
 canvas.addEventListener("touchstart", (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.touches[0].clientX - rect.left;
-    const y = e.touches[0].clientY - rect.top;
+    const { x, y } = getCanvasCoordinates(e);
     console.log("Touch at:", { x, y });
     checkCollision(x, y);
 });
