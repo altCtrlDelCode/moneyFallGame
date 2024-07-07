@@ -13,24 +13,20 @@ function getRandomSymbol() {
 }
 
 function createFallingObject() {
-    const x = Math.random() * (canvas.width - objectSize);
-    const symbol = getRandomSymbol();
-
-    // Check for overlap and reposition if necessary
-    let overlap = false;
+    let x;
+    let overlap;
     do {
         overlap = false;
-        for (let obj of fallingObjects) {
-            if (Math.abs(obj.x - x) < objectSize && Math.abs(obj.y - 0) < objectSize) {
+        x = Math.random() * (canvas.width - objectSize);
+        for (const obj of fallingObjects) {
+            if (Math.abs(obj.x - x) < objectSize) {
                 overlap = true;
                 break;
             }
         }
-        if (overlap) {
-            x = Math.random() * (canvas.width - objectSize);
-        }
     } while (overlap);
 
+    const symbol = getRandomSymbol();
     fallingObjects.push({ x, y: 0, symbol });
 }
 
@@ -100,7 +96,7 @@ function startGame() {
         gameInterval = setInterval(() => {
             createFallingObject();
             update();
-        }, 100);
+        }, 50); // Faster interval for smoother falling
     } else {
         startButton.textContent = "Start Game";
         clearInterval(gameInterval);
