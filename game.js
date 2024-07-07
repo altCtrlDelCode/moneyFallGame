@@ -15,6 +15,22 @@ function getRandomSymbol() {
 function createFallingObject() {
     const x = Math.random() * (canvas.width - objectSize);
     const symbol = getRandomSymbol();
+
+    // Check for overlap and reposition if necessary
+    let overlap = false;
+    do {
+        overlap = false;
+        for (let obj of fallingObjects) {
+            if (Math.abs(obj.x - x) < objectSize && Math.abs(obj.y - 0) < objectSize) {
+                overlap = true;
+                break;
+            }
+        }
+        if (overlap) {
+            x = Math.random() * (canvas.width - objectSize);
+        }
+    } while (overlap);
+
     fallingObjects.push({ x, y: 0, symbol });
 }
 
@@ -31,12 +47,12 @@ function update() {
             continue;
         }
 
-        ctx.fillStyle = obj.symbol === "$" ? "green" : "black";
+        ctx.fillStyle = obj.symbol === "$" ? "yellow" : "white";
         ctx.font = `${objectSize}px Arial`;
         ctx.fillText(obj.symbol, obj.x, obj.y);
     }
 
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "red";
     ctx.font = "20px Arial";
     ctx.fillText(`Score: ${score}`, 10, 30);
 }
@@ -44,7 +60,8 @@ function update() {
 function checkCollision(x, y) {
     for (let i = 0; i < fallingObjects.length; i++) {
         const obj = fallingObjects[i];
-        if (x > obj.x && x < obj.x + objectSize && y > obj.y && y < obj.y + objectSize) {
+        const distance = Math.hypot(x - (obj.x + objectSize / 2), y - (obj.y - objectSize / 2));
+        if (distance < objectSize / 2 + 3) { // 3 pixels tolerance
             if (obj.symbol === "$") {
                 score++;
                 fallingObjects.splice(i, 1);
@@ -78,12 +95,22 @@ canvas.addEventListener("touchstart", (e) => {
 });
 
 function startGame() {
-    startButton.style.display = "none";
-    canvas.style.display = "block";
-    gameInterval = setInterval(() => {
-        createFallingObject();
-        update();
-    }, 100);
+    if (startButton.textContent === "Start Game") {
+        startButton.textContent = "Stop Game";
+        gameInterval = setInterval(() => {
+            createFallingObject();
+            update();
+        }, 100);
+    } else {
+        startButton.textContent = "Start Game";
+        clearInterval(gameInterval);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        fallingObjects.length = 0;
+        score = 0;
+        ctx.fillStyle = "red";
+        ctx.font = "20px Arial";
+        ctx.fillText(`Score: ${score}`, 10, 30);
+    }
 }
 
 startButton.addEventListener("click", startGame);
