@@ -53,6 +53,11 @@ function update() {
     ctx.fillText(`Score: ${score}`, 10, 30);
 }
 
+function gameLoop() {
+    createFallingObject();
+    update();
+}
+
 function checkCollision(x, y) {
     for (let i = 0; i < fallingObjects.length; i++) {
         const obj = fallingObjects[i];
@@ -93,10 +98,7 @@ canvas.addEventListener("touchstart", (e) => {
 function startGame() {
     if (startButton.textContent === "Start Game") {
         startButton.textContent = "Stop Game";
-        gameInterval = setInterval(() => {
-            createFallingObject();
-            update();
-        }, 50); // Faster interval for smoother falling
+        gameInterval = setInterval(gameLoop, 50); // Faster interval for smoother falling
     } else {
         startButton.textContent = "Start Game";
         clearInterval(gameInterval);
