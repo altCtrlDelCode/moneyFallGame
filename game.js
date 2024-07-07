@@ -13,19 +13,7 @@ function getRandomSymbol() {
 }
 
 function createFallingObject() {
-    let x;
-    let overlap;
-    do {
-        overlap = false;
-        x = Math.random() * (canvas.width - objectSize);
-        for (const obj of fallingObjects) {
-            if (Math.abs(obj.x - x) < objectSize) {
-                overlap = true;
-                break;
-            }
-        }
-    } while (overlap);
-
+    const x = Math.random() * (canvas.width - objectSize);
     const symbol = getRandomSymbol();
     fallingObjects.push({ x, y: 0, symbol });
 }
@@ -61,7 +49,7 @@ function gameLoop() {
 function checkCollision(x, y) {
     for (let i = 0; i < fallingObjects.length; i++) {
         const obj = fallingObjects[i];
-        const distance = Math.hypot(x - (obj.x + objectSize / 2), y - (obj.y - objectSize / 2));
+        const distance = Math.hypot(x - (obj.x + objectSize / 2), y - (obj.y + objectSize / 2));
         if (distance < objectSize / 2 + 3) { // 3 pixels tolerance
             if (obj.symbol === "$") {
                 score++;
@@ -111,4 +99,4 @@ function startGame() {
     }
 }
 
-startButton.addEventListener("click", startGame); 
+startButton.addEventListener("click", startGame);
